@@ -1,0 +1,15 @@
+.GridStyle {
+    
+}
+
+.BoardStyle {
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.rowStyle {
+    display: flex;
+    flex-wrap: wrap;
+}

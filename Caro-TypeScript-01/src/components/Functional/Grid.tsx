@@ -1,11 +1,14 @@
 import { Button } from "react-bootstrap";
-import './Grid.css'
+
 
 function Grid() {
+    const gridStyle = {
+        width: '8vh',
+        height: '8vh',
+        border: '3px solid black'
+    };
     return (
-        <div>
-            <Button  className="buttonStyle" style = {{whiteSpace:'pre'}}>{' '}</Button>
-        </div>
+        <button className="btn btn-primary" style={{ ...gridStyle, whiteSpace: 'pre' }}>{'X'}</button>
     );
 }
 

@@ -1,28 +1,24 @@
 import Container from "react-bootstrap/esm/Container";
 import Grid from "./Grid";
-import './Board.css'
 import { useState, useEffect } from "react";
+import './Style.css'
 
 function Board() {
-    const [valueSet, setValueSet] = useState<string[]>([])
-    useEffect(() => {
-        for (let i=0; i< 10; i++) {
-            valueSet[i] = 'O';
-            
+  
+  return (
+    <div className="container BoardStyle">
+        <div className="rowStyle">
+        {
+        Array.from({ length: 15 }, (_, i) => {
+          console.log(i);
+          return <Grid key={i} />;
+        })
         }
-        setValueSet(() => valueSet);
-      }, []);
-    
-    return ( 
-        <Container className="containerStyle" >
-           <Grid/>
-           <Grid/>
-           <Grid/>
-           <Grid/>
-           <Grid/>
-           <Grid/>
-        </Container>
-    );
+        </div>
+        <div></div>
+        <div>world</div>
+    </div>
+  );
 }
 
 export default Board;
