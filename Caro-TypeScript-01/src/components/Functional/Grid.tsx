@@ -1,14 +1,22 @@
+import { useState } from "react";
 import { Button } from "react-bootstrap";
+import './Style.css'
 
-
-function Grid() {
-    const gridStyle = {
-        width: '8vh',
-        height: '8vh',
-        border: '3px solid black'
-    };
+interface propsInterface {
+    indexI: number;
+    indexJ: number;
+  }
+function Grid(props: propsInterface) {
+    const {indexI, indexJ} = props;
+    const [value, setValue] = useState(' ');
+    const handleOnClick = () => {
+        // console.log(indexI);
+        // console.log(indexJ);
+        console.log('world');
+       setValue('X');
+    } 
     return (
-        <button className="btn btn-primary" style={{ ...gridStyle, whiteSpace: 'pre' }}>{'X'}</button>
+        <span className="Grid" onClick={handleOnClick}>{value}</span>
     );
 }
 

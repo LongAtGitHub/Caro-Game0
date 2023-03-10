@@ -1,15 +1,27 @@
-.GridStyle {
-    
+.Grid {
+    box-sizing: border-box;
+    border: 1px solid black;
+    width: 7vh;
+    height: 7vh;
+    display: flex;
+  align-items: center; /* or flex-start, flex-end, etc. */
+  justify-content: center;
 }
 
+.Grid:hover {
+    background-color: #0062cc; /* darker blue */
+  }
+
 .BoardStyle {
-    margin-top: 10%;
+    margin-top: 5%;
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
 }
 
 .rowStyle {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
+    justify-content: center;
+    
 }
+
