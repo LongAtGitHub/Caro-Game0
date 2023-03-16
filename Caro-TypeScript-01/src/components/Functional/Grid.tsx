@@ -8,11 +8,9 @@ import './Style.css'
 //     value: string;
 //   }
 function Grid(props: any) {
-    const {indexI, indexJ} = props;
-    const [value, setValue] = useState(' ');
+    const {indexI, indexJ, value, handleChildEvent} = props;
     const handleOnClick = () => {
-        // console.log(indexI);
-        // console.log(indexJ);
+        handleChildEvent(indexI, indexJ)
     } 
     return (
         <span className="Grid" onClick={handleOnClick}>{value}</span>
