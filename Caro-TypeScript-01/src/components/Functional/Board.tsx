@@ -6,7 +6,8 @@ import "./Style.css";
 function Board() {
 
   /**  Set up board */
-  const [nrow, ncol] = [10, 15];
+  const [nrow, ncol] = [10, 15]; 
+  const maxEntries = nrow*ncol;
   const boardMat0: string[][]=[];
   for (let i =0; i< nrow; i++) {
     boardMat0[i] = []
@@ -20,18 +21,27 @@ function Board() {
   const [playerTurn, setPlayerTurn] = useState('X');
   const [recentI, setRecentI] = useState(-1);
   const [recentJ, setRecentJ] = useState(-1);
+  const [filledCount, setFilledCount] = useState(0); 
   
   
   /** Handle Grid Events when onClick happens */
   const handleChildEvent = (indexI: number, indexJ: number) => {  
+    if (boardMat[indexI][indexJ] != ' ') return;
+    setFilledCount(prevCount => prevCount+1)
     setRecentI(indexI)  
     let boardMat1 = [...boardMat];
     if (playerTurn === 'X') setPlayerTurn(() =>'O')
     else setPlayerTurn(() => 'X')    
     boardMat1[indexI][indexJ] = playerTurn;
     setBoardMat(boardMat1);
-    checkWin(indexI, indexJ, playerTurn)
   }
+
+  // useEffect(() => {
+  //   let outcome = checkWin(recentI, recentJ, playerTurn);
+  //   if (outcome == 'X') alert('X wins')
+  //   else if (outcome == 'O') alert('O wins')
+  //   else if (outcome == 'T') alert('Tie happens')
+  // }, [boardMat]);
 
   function isValidI(indexI: number) {
     return (indexI >=0 && indexI<nrow)
@@ -51,26 +61,61 @@ function Board() {
     for (let ite = 1; ite<= 4; ite++) {
       if (!isValidI(indexI+ite)) break
       if (boardMat[indexI + ite][indexJ] === playerTurn) count++
+      else break
     }
     for (let ite = 1; ite<= 4; ite++) {
       if (!isValidI(indexI-ite)) break
       if (boardMat[indexI - ite][indexJ] === playerTurn) count++
+      else break
     }
-    console.log(`Vertical case: playerTurn is ${playerTurn}, count is ${count}`);
+    // console.log(`Vertical case: playerTurn is ${playerTurn}, count is ${count}`);
+    if (count >=5) return playerTurn
+
     // horizontal case
     count =1
     for (let ite = 1; ite<= 4; ite++) {
       if (!isValidJ(indexJ+ite)) break
       if (boardMat[indexI][indexJ+ ite] === playerTurn) count++
+      else break
     }
     for (let ite = 1; ite<= 4; ite++) {
       if (!isValidJ(indexJ-ite)) break
       if (boardMat[indexI][indexJ-ite] === playerTurn) count++
+      else break
     }
-    console.log(`Horizontal case: playerTurn is ${playerTurn}, count is ${count}`);
-    
+    // console.log(`Horizontal case: playerTurn is ${playerTurn}, count is ${count}`);
     if (count >=5) return playerTurn
-    
+
+    // diagonal case 1: i++ j++
+    count =1
+    for (let ite = 1; ite<= 4; ite++) {
+      if (!isValidJ(indexJ+ite)) break
+      if (boardMat[indexI+ite][indexJ+ ite] === playerTurn) count++
+      else break
+    }
+    for (let ite = 1; ite<= 4; ite++) {
+      if (!isValidJ(indexJ-ite)) break
+      if (boardMat[indexI-ite][indexJ-ite] === playerTurn) count++
+      else break
+    }
+    // console.log(`Diagonal case 1: playerTurn is ${playerTurn}, count is ${count}`);
+    if (count >=5) return playerTurn
+
+    // diagonal case 2: i-- j++ and i++ j--
+    count =1
+    for (let ite = 1; ite<= 4; ite++) {
+      if (!isValidJ(indexJ+ite)) break
+      if (boardMat[indexI-ite][indexJ+ ite] === playerTurn) count++
+      else break
+    }
+    for (let ite = 1; ite<= 4; ite++) {
+      if (!isValidJ(indexJ-ite)) break
+      if (boardMat[indexI+ite][indexJ-ite] === playerTurn) count++
+      else break
+    }
+    // console.log(`Diagonal case 2: playerTurn is ${playerTurn}, count is ${count}`);
+    if (count >=5) return playerTurn
+    if (filledCount== maxEntries) return 'T'
     return 'N'
   }
   
@@ -78,6 +123,7 @@ function Board() {
   /** Return components to be rendered */
   return (
     <div className="container BoardStyle">
+      <div className="mb-2">Turn: {filledCount}</div>
       {Array.from({ length: nrow }, (_, i) => (
         <div className="rowStyle" key={i}>
           {Array.from({ length: ncol }, (_, j) => (
