@@ -18,7 +18,7 @@ function Board() {
   const [boardMat, setBoardMat] = useState(boardMat0);
 
   /** Logic turn value */
-  const [playerTurn, setPlayerTurn] = useState('X');
+  const [playerTurn, setPlayerTurn] = useState('O');
   const [recentI, setRecentI] = useState(-1);
   const [recentJ, setRecentJ] = useState(-1);
   const [filledCount, setFilledCount] = useState(0); 
@@ -28,20 +28,27 @@ function Board() {
   const handleChildEvent = (indexI: number, indexJ: number) => {  
     if (boardMat[indexI][indexJ] != ' ') return;
     setFilledCount(prevCount => prevCount+1)
-    setRecentI(indexI)  
-    let boardMat1 = [...boardMat];
-    if (playerTurn === 'X') setPlayerTurn(() =>'O')
-    else setPlayerTurn(() => 'X')    
+    setRecentI(indexI) 
+    setRecentJ(indexJ) 
+    let boardMat1 = [...boardMat]; 
     boardMat1[indexI][indexJ] = playerTurn;
     setBoardMat(boardMat1);
   }
 
-  // useEffect(() => {
-  //   let outcome = checkWin(recentI, recentJ, playerTurn);
-  //   if (outcome == 'X') alert('X wins')
-  //   else if (outcome == 'O') alert('O wins')
-  //   else if (outcome == 'T') alert('Tie happens')
-  // }, [boardMat]);
+  useEffect(() => {
+    let outcome = checkWin(recentI, recentJ, playerTurn);
+    if (outcome == 'X' || outcome == 'O') {
+      alert(`${outcome} wins`)
+      window.location.reload()
+    }
+    if (outcome == 'T') {
+      alert('Tie happens')
+      window.location.reload()
+    }
+    if (playerTurn === 'X') setPlayerTurn(() =>'O')
+    else setPlayerTurn(() => 'X')   
+  }, [boardMat, recentI, recentJ]);
+
 
   function isValidI(indexI: number) {
     return (indexI >=0 && indexI<nrow)
@@ -57,6 +64,7 @@ function Board() {
    */
   function checkWin(indexI: number, indexJ: number, playerTurn: string) {
     // vertical case
+    if (!(isValidI(indexI)&& isValidJ(indexJ))) return
     let count =1
     for (let ite = 1; ite<= 4; ite++) {
       if (!isValidI(indexI+ite)) break
@@ -68,7 +76,7 @@ function Board() {
       if (boardMat[indexI - ite][indexJ] === playerTurn) count++
       else break
     }
-    // console.log(`Vertical case: playerTurn is ${playerTurn}, count is ${count}`);
+    console.log(`Vertical case: playerTurn is ${playerTurn}, count is ${count}`);
     if (count >=5) return playerTurn
 
     // horizontal case
@@ -83,37 +91,37 @@ function Board() {
       if (boardMat[indexI][indexJ-ite] === playerTurn) count++
       else break
     }
-    // console.log(`Horizontal case: playerTurn is ${playerTurn}, count is ${count}`);
+    console.log(`Horizontal case: playerTurn is ${playerTurn}, count is ${count}`);
     if (count >=5) return playerTurn
 
     // diagonal case 1: i++ j++
     count =1
     for (let ite = 1; ite<= 4; ite++) {
-      if (!isValidJ(indexJ+ite)) break
+      if (!isValidJ(indexJ+ite) || !isValidI(indexI+ite)) break
       if (boardMat[indexI+ite][indexJ+ ite] === playerTurn) count++
       else break
     }
     for (let ite = 1; ite<= 4; ite++) {
-      if (!isValidJ(indexJ-ite)) break
+      if (!isValidJ(indexJ-ite) || !isValidI(indexI-ite)) break
       if (boardMat[indexI-ite][indexJ-ite] === playerTurn) count++
       else break
     }
-    // console.log(`Diagonal case 1: playerTurn is ${playerTurn}, count is ${count}`);
+    console.log(`Diagonal case 1: playerTurn is ${playerTurn}, count is ${count}`);
     if (count >=5) return playerTurn
 
     // diagonal case 2: i-- j++ and i++ j--
     count =1
     for (let ite = 1; ite<= 4; ite++) {
-      if (!isValidJ(indexJ+ite)) break
+      if (!isValidI(indexI-ite) || !isValidJ(indexJ + ite)) break
       if (boardMat[indexI-ite][indexJ+ ite] === playerTurn) count++
       else break
     }
     for (let ite = 1; ite<= 4; ite++) {
-      if (!isValidJ(indexJ-ite)) break
+      if (!isValidI(indexI+ite) || !isValidJ(indexJ-ite)) break
       if (boardMat[indexI+ite][indexJ-ite] === playerTurn) count++
       else break
     }
-    // console.log(`Diagonal case 2: playerTurn is ${playerTurn}, count is ${count}`);
+     console.log(`Diagonal case 2: playerTurn is ${playerTurn}, count is ${count}`);
     if (count >=5) return playerTurn
     if (filledCount== maxEntries) return 'T'
     return 'N'
