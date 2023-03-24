@@ -2,6 +2,7 @@ import Container from "react-bootstrap/esm/Container";
 import Grid from "./Grid";
 import { useState, useEffect } from "react";
 import "./Style.css";
+import WinnerScreen from "../VisualsBootstrap/WinnerScreen";
 
 function Board() {
 
@@ -22,6 +23,7 @@ function Board() {
   const [recentI, setRecentI] = useState(-1);
   const [recentJ, setRecentJ] = useState(-1);
   const [filledCount, setFilledCount] = useState(0); 
+  const [gameState, setGameState] = useState('N');
   
   
   /** Handle Grid Events when onClick happens */
@@ -36,15 +38,17 @@ function Board() {
   }
 
   useEffect(() => {
-    let outcome = checkWin(recentI, recentJ, playerTurn);
-    if (outcome == 'X' || outcome == 'O') {
-      alert(`${outcome} wins`)
-      window.location.reload()
-    }
-    if (outcome == 'T') {
-      alert('Tie happens')
-      window.location.reload()
-    }
+    setGameState(() => checkWin(recentI, recentJ, playerTurn));
+    // let outcome = checkWin(recentI, recentJ, playerTurn);
+    // if (outcome == 'X' || outcome == 'O') {
+    //   alert(`${outcome} wins`)
+    //   window.location.reload()
+    // }
+    // if (outcome == 'T') {
+    //   alert('Tie happens')
+    //   window.location.reload()
+    // }
+
     if (playerTurn === 'X') setPlayerTurn(() =>'O')
     else setPlayerTurn(() => 'X')   
   }, [boardMat, recentI, recentJ]);
@@ -62,9 +66,9 @@ function Board() {
    * @indexJ the reference index of I to start the function
    * @return a char representing game state (Tie, WinX, WinO, None) - T, X, O, N
    */
-  function checkWin(indexI: number, indexJ: number, playerTurn: string) {
+  function checkWin(indexI: number, indexJ: number, playerTurn: string):string {
     // vertical case
-    if (!(isValidI(indexI)&& isValidJ(indexJ))) return
+    if (!(isValidI(indexI)&& isValidJ(indexJ))) return 'null'
     let count =1
     for (let ite = 1; ite<= 4; ite++) {
       if (!isValidI(indexI+ite)) break
@@ -131,7 +135,21 @@ function Board() {
   /** Return components to be rendered */
   return (
     <div className="container BoardStyle">
+
+      {/* If there is a winner or a tie, render this*/}
+      {((gameState != "N") && (gameState != "null")) ? (
+        <div className="BlurBackground">
+          <WinnerScreen gameState={gameState} />
+        </div>
+      )
+      :
+      <></>
+    }
+
+      {/* Turn Count div */}
       <div className="mb-2">Turn: {filledCount}</div>
+
+      {/* Grids div */}
       {Array.from({ length: nrow }, (_, i) => (
         <div className="rowStyle" key={i}>
           {Array.from({ length: ncol }, (_, j) => (
@@ -139,6 +157,8 @@ function Board() {
           ))}
         </div>
       ))}
+
+
     </div>
   );
 }
